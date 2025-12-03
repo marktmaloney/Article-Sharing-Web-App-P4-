@@ -2,6 +2,8 @@
 import cors from "cors";
 import { createDbConnection } from "./db.js";
 import { ensureAdminUser } from "./seedAdmin.js";
+import { createAuthRouter } from "./routes/authRoutes.js";
+import { createArticleRouter } from "./routes/articleRoutes.js";
 
 const PORT = process.env.PORT || 4000;
 
@@ -13,12 +15,12 @@ async function main() {
   app.use(cors());
   app.use(express.json());
 
-  // simple health check
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok" });
   });
 
-  // TODO: add auth and article routes here later, using `db`
+  app.use("/api/auth", createAuthRouter(db));
+  app.use("/api/articles", createArticleRouter(db));
 
   app.listen(PORT, () => {
     console.log(`Backend running on http://localhost:${PORT}`);
