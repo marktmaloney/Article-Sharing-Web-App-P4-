@@ -1,0 +1,128 @@
+# Manual Implementation Log
+## Article Sharing Web App – EECS 677 Project 4
+
+This document summarizes the features implemented in the manually coded version of the Article Sharing Web App and the features that were not completed due to the 20-hour development cap.
+
+---
+
+# 1. Overview
+
+The manual implementation consists of a Node.js/Express backend connected to a React + Vite frontend. All user accounts, authentication logic, and article storage are handled locally using a SQLite database. The application meets the core assignment requirements:
+
+- Users can register, log in, and remain authenticated using JWT.
+- Authenticated users can post article URLs.
+- Users can delete only their own articles.
+- An automatically seeded admin account can delete any article.
+- Article data persists across runs through SQLite.
+---
+
+# 2. Implemented Features
+
+## Backend (Node.js + Express + SQLite)
+
+### Database
+- SQLite database (`article_share.db`) auto-created on startup.
+- Tables created automatically:
+  - `users`
+  - `articles`
+- Admin account created automatically:
+  - Username: `admin`
+  - Password: `admin`
+
+### Authentication
+- User registration endpoint  
+  (`POST /api/auth/register`)
+- User login endpoint  
+  (`POST /api/auth/login`)
+- Password hashing using **bcrypt**
+- Token-based authentication using **JWT**
+- Middleware to validate JWT on protected routes
+
+### Article Functionality
+- Create a new article  
+  (`POST /api/articles`)
+- View all articles  
+  (`GET /api/articles`)
+- Delete an article  
+  (`DELETE /api/articles/:id`)
+- Authorization rules:
+  - A normal user may delete **only their own** posts
+  - Admin may delete **any** post
+
+### Security Practices
+- Passwords never stored in plaintext
+- Authentication enforced on write/delete operations
+- Role-based access control
+- Basic input validation (missing fields, invalid URLs)
+
+---
+
+## 2 Frontend (React + Vite)
+
+The frontend is intentionally simple and minimalistic, as permitted by the assignment.
+
+### Main Features
+- Login UI
+- Register UI
+- LocalStorage used to save/restore JWT tokens
+- Form to post a new article
+- List of all articles
+- Delete buttons for authenticated users
+
+### Interaction With Backend
+- Fetches all articles from `/api/articles`
+- Sends login and register requests to `/api/auth/*`
+- Sends authenticated article creation and deletion requests using `Authorization: Bearer <token>`
+
+### UI Design Choices
+- No styling libraries
+- Inline, minimal styles
+- Single-file React implementation (`App.jsx`)
+- Simple "college-project-level" functionality
+
+---
+
+# 3. Features Not Implemented 
+
+The following items were identified as desirable improvements but not required by the assignment. These were not implemented due to the 20-hour cap:
+
+### Frontend Styling / UX
+- No responsive layout
+- No CSS frameworks
+- No page routing or multi-page layout
+- No advanced error/success UI
+
+### Account Management
+- No password reset flow
+- No email verification
+- No profile page
+- No logout timer or token refresh logic
+
+### Article Enhancements
+- No pagination or infinite scroll
+- No article metadata extraction (title scraping)
+- No editing of existing articles
+
+### Security Hardening
+- No rate limiting
+- No CSRF protection (not needed for local dev)
+- No environment-based config switching
+
+### Deployment
+- No Dockerfile
+- No production bundling of frontend + backend
+- Not deployed to any hosting platform (local-only as required)
+
+---
+
+# 4. Conclusion
+
+The manual implementation satisfies all essential functional requirements of the Article Sharing Web App:
+
+- Persistent data storage  
+- Secure login and account creation  
+- Posting and deleting articles  
+- Admin-level delete permissions  
+- A functioning frontend interface  
+
+All core features operate correctly and the project is structured properly.
